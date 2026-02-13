@@ -6,108 +6,92 @@
 <title>Catch My Heart 💖</title>
 
 <style>
-    body {
-        margin: 0;
-        background: #ffe6ea;
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
+body {
+    margin: 0;
+    background: #ffe6ea;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
 
-    h1 {
-        color: #c9184a;
-        margin-top: 20px;
-    }
+h1 {
+    color: #c9184a;
+    margin-top: 20px;
+}
 
-    #gameContainer {
-        width: 90%;
-        max-width: 320px;
-        margin: 0 auto;
-    }
+#gameArea {
+    position: relative;
+    width: 280px;
+    height: 180px;
+    margin: 20px auto;
+    background: #fff0f3;
+    border-radius: 15px;
+    border: 2px solid #ffc2d1;
+    overflow: hidden;
+}
 
-    #gameArea {
-        position: relative;
-        width: 100%;
-        height: 200px;
-        background: #fff0f3;
-        border-radius: 15px;
-        margin-top: 20px;
-        overflow: hidden;
-        border: 2px solid #ffc2d1;
-    }
+.heart {
+    position: absolute;
+    font-size: 48px;
+    cursor: pointer;
+    transition: left 1.2s ease, top 1.2s ease;
+    user-select: none;
+}
 
-    .heart {
-        position: absolute;
-        font-size: 40px;
-        cursor: pointer;
-        transition: left 1s ease, top 1s ease;
-        user-select: none;
-    }
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+    border-radius: 8px;
+}
 
-    button {
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-        margin: 10px;
-        border-radius: 8px;
-    }
+#yesBtn {
+    background-color: #ff8fab;
+}
 
-    #yesBtn {
-        background-color: #ff8fab;
-    }
-
-    #noBtn {
-        background-color: #ffc2d1;
-        position: absolute;
-    }
-
-    #proposal {
-        display: none;
-        margin-top: 30px;
-        position: relative;
-        height: 200px;
-    }
+#noBtn {
+    background-color: #ffc2d1;
+    position: absolute;
+}
 </style>
 </head>
 
 <body>
 
 <h1>💘 Catch My Heart 💘</h1>
-<p id="counter">Vanessa 💕 Catch 5 hearts if you can 😏</p>
+<p id="counter">Vanessa 💕 Catch 5 hearts!</p>
 
-<div id="gameContainer">
-    <div id="gameArea"></div>
-</div>
+<div id="gameArea"></div>
 
-<div id="proposal">
+<div id="proposal" style="display:none; position:relative; height:200px;">
     <h2>Vanessa ❤️</h2>
-    <p>You caught my heart…</p>
+    <p>You caught my heart...</p>
     <p><strong>Will you be my girlfriend?</strong></p>
     <button id="yesBtn">YES 💕</button>
     <button id="noBtn">No 😢</button>
 </div>
 
 <script>
+window.onload = function() {
+
 let heartsCaught = 0;
 const totalHearts = 5;
 
 const gameArea = document.getElementById("gameArea");
 const counter = document.getElementById("counter");
 const proposal = document.getElementById("proposal");
-const noBtn = document.getElementById("noBtn");
 
-// Create heart
 const heart = document.createElement("div");
-heart.classList.add("heart");
-heart.innerHTML = "❤️";
+heart.className = "heart";
+heart.textContent = "❤️";
 gameArea.appendChild(heart);
 
-// Proper mobile-safe positioning
 function moveHeart() {
     const areaWidth = gameArea.clientWidth;
     const areaHeight = gameArea.clientHeight;
 
-    const heartSize = 40;
+    const heartSize = 48;
 
     const maxX = areaWidth - heartSize;
     const maxY = areaHeight - heartSize;
@@ -119,16 +103,61 @@ function moveHeart() {
     heart.style.top = y + "px";
 }
 
-// Move on hover (desktop)
-heart.addEventListener("mouseenter", moveHeart);
+// Tap or click works on mobile
+heart.addEventListener("click", function() {
+    heartsCaught++;
+    counter.innerText = "Hearts: " + heartsCaught + " / " + totalHearts;
 
-// Move on tap (mobile)
-heart.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    moveHeart();
+    if (heartsCaught < totalHearts) {
+        moveHeart();
+    } else {
+        gameArea.style.display = "none";
+        counter.style.display = "none";
+        proposal.style.display = "block";
+    }
 });
 
-// Click heart
-heart.addEventListener("click", () => {
-    heartsCaught++;
-    counter.inner
+// YES button
+document.getElementById("yesBtn").addEventListener("click", function() {
+    document.body.innerHTML = `
+        <h1 style="margin-top:120px;color:#c9184a;">
+            She said YES!!! 💖
+        </h1>
+        <p style="font-size:20px;">
+            Vanessa 💕 You just made me the happiest person alive ❤️
+        </p>
+    `;
+});
+
+// NO button runs and shrinks
+const noBtn = document.getElementById("noBtn");
+let noSize = 16;
+noBtn.style.fontSize = noSize + "px";
+
+function moveNo() {
+    const x = Math.random() * 200;
+    const y = Math.random() * 120;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    if (noSize > 8) {
+        noSize -= 1;
+        noBtn.style.fontSize = noSize + "px";
+    }
+}
+
+noBtn.addEventListener("click", moveNo);
+noBtn.addEventListener("touchstart", function(e){
+    e.preventDefault();
+    moveNo();
+});
+
+// Initial spawn AFTER everything loads
+setTimeout(moveHeart, 200);
+
+};
+</script>
+
+</body>
+</html>
