@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catch My Heart 💖</title>
 
 <style>
@@ -18,13 +19,14 @@
     }
 
     #gameContainer {
-        width: 320px;
+        width: 90%;
+        max-width: 320px;
         margin: 0 auto;
     }
 
     #gameArea {
         position: relative;
-        width: 320px;
+        width: 100%;
         height: 200px;
         background: #fff0f3;
         border-radius: 15px;
@@ -37,7 +39,8 @@
         position: absolute;
         font-size: 40px;
         cursor: pointer;
-        transition: left 1.2s ease, top 1.2s ease; /* slower movement */
+        transition: left 1s ease, top 1s ease;
+        user-select: none;
     }
 
     button {
@@ -95,4 +98,37 @@ const noBtn = document.getElementById("noBtn");
 
 // Create heart
 const heart = document.createElement("div");
-heart.clas
+heart.classList.add("heart");
+heart.innerHTML = "❤️";
+gameArea.appendChild(heart);
+
+// Proper mobile-safe positioning
+function moveHeart() {
+    const areaWidth = gameArea.clientWidth;
+    const areaHeight = gameArea.clientHeight;
+
+    const heartSize = 40;
+
+    const maxX = areaWidth - heartSize;
+    const maxY = areaHeight - heartSize;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    heart.style.left = x + "px";
+    heart.style.top = y + "px";
+}
+
+// Move on hover (desktop)
+heart.addEventListener("mouseenter", moveHeart);
+
+// Move on tap (mobile)
+heart.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    moveHeart();
+});
+
+// Click heart
+heart.addEventListener("click", () => {
+    heartsCaught++;
+    counter.inner
